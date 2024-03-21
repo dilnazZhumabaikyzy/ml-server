@@ -1,12 +1,13 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
 from app.classifier import classify_all, predict_input, predict_output, predict_topic, predict_difficulty, extract_keywords
+from app.similarity  import find_similar_problems
 
 app = Flask(__name__)
 api = Api(app)
 
 class Classification(Resource):
-    def post(self):
+    def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument("input", type=str, required=True, help="Input text is required")
         args = parser.parse_args()
@@ -18,7 +19,7 @@ class Classification(Resource):
         return predictions, 200
 
 class ClassifyInput(Resource):
-    def post(self):
+    def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument("input", type=str, required=True, help="Input text is required")
         args = parser.parse_args()
@@ -30,7 +31,7 @@ class ClassifyInput(Resource):
         return {"input": prediction}, 200
 
 class ClassifyOutput(Resource):
-    def post(self):
+    def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument("input", type=str, required=True, help="Input text is required")
         args = parser.parse_args()
@@ -42,7 +43,7 @@ class ClassifyOutput(Resource):
         return {"output": prediction}, 200
 
 class ClassifyTopic(Resource):
-    def post(self):
+    def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument("input", type=str, required=True, help="Input text is required")
         args = parser.parse_args()
@@ -55,7 +56,7 @@ class ClassifyTopic(Resource):
         return {"topic": prediction}, 200
 
 class ClassifyDifficulty(Resource):
-    def post(self):
+    def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument("input", type=str, required=True, help="Input text is required")
         args = parser.parse_args()
@@ -67,7 +68,7 @@ class ClassifyDifficulty(Resource):
         return {"difficulty": prediction}, 200
 
 class ExtractKeywords(Resource):
-    def post(self):
+    def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument("input", type=str, required=True, help="Input text is required")
         args = parser.parse_args()
@@ -79,6 +80,21 @@ class ExtractKeywords(Resource):
 
         return {"keywords": prediction}, 200
 
+class FindSimilarProblems(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("input", type=dict, required=True, help="Input data is required")
+        args = parser.parse_args()
+        
+        user_input = args["input"]
+
+        # Find similar problems
+        similar_problem_ids = find_similar_problems(user_input)
+
+        return {"similar_problem_ids": similar_problem_ids}, 200
+
+
+api.add_resource(FindSimilarProblems, "/find_similar_problems")
 api.add_resource(ClassifyInput, "/classify/input")
 api.add_resource(ClassifyOutput, "/classify/output")
 api.add_resource(ClassifyTopic, "/classify/topic")
