@@ -7,8 +7,6 @@ import joblib
 vectorizer = joblib.load('app/vectorizer/similarity_vectorizer.joblib')
 df = pd.read_csv("app/dataset/sigma_v_1.csv")
 
-
-
 def find_similar_problems(user_input):
     # Load the DataFrame
     df['Keywords'] = df['Keywords'].astype(str)
@@ -37,9 +35,14 @@ def find_similar_problems(user_input):
     top_indices = similarity_scores.argsort()[0][-3:][::-1]
 
     # Getting top 3 similar problems and their IDs
-    top_problem_ids = df.iloc[top_indices]['Id'].tolist()
+    top_problems = {}
+    for i, idx in enumerate(top_indices):
+        problem_id = df.iloc[idx]['Id']
+        sim_score = similarity_scores[0, idx] * 100  # Converting similarity score to percentage
+        top_problems[f"problem_{i+1}"] = {
+            "id": str(problem_id),
+            "similarity_score": str(round(sim_score, 2))
+        }
     
-    return top_problem_ids
-
-
+    return top_problems
 

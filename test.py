@@ -41,5 +41,9 @@ user_input = {
 res = requests.get("http://127.0.0.1:3000/find_similar_problems", json={"input": user_input})
 
 # Print the response
-print("Similar problem IDs:", res.json()["similar_problem_ids"])
-# print("Response content:", res.content)
+response_data = res.json()
+for problem_key, problem_data in response_data.items():
+    print(f"Problem {problem_key}:")
+    print(f"ID: {problem_data['id']}")
+    print(f"Similarity Score: {problem_data['similarity_score']}")
+    print()

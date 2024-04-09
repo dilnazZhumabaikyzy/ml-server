@@ -89,9 +89,9 @@ class FindSimilarProblems(Resource):
         user_input = args["input"]
 
         # Find similar problems
-        similar_problem_ids = find_similar_problems(user_input)
+        response = find_similar_problems(user_input)
 
-        return {"similar_problem_ids": similar_problem_ids}, 200
+        return response, 200
 
 
 api.add_resource(FindSimilarProblems, "/find_similar_problems")
