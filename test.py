@@ -28,7 +28,12 @@ print("Difficulty classification:", res_difficulty.json())
 res_keywords = requests.post("http://127.0.0.1:3000/classify/keywords", json=data, headers=headers)
 print("Keywords extraction:", res_keywords.json())
 
-# Define the user input dictionary
+res_mapreduce = requests.post("http://127.0.0.1:3000/classify/mapreduce", json=data, headers=headers)
+
+print("Mapreduce 5 classifications:")
+print(res_mapreduce.json()) 
+
+
 user_input = {
     "Topic": "dynamic programming",
     "Keywords": "array, search",
@@ -42,10 +47,8 @@ user_input = {
     "ConditionProblem": "1"
 }
 
-# Make a POST request to the API endpoint
 res = requests.post("http://127.0.0.1:3000/find_similar_problems", json={"input": user_input})
 
-# Print the response
 response_data = res.json()
 for problem_key, problem_data in response_data.items():
     print(f"Problem {problem_key}:")

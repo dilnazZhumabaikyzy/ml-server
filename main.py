@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
-from app.classifier import classify_all, predict_input, predict_output, predict_topic, predict_difficulty, extract_keywords
+from app.classifier import classify_all, predict_five_features, predict_input, predict_output, predict_topic, predict_difficulty, extract_keywords
 from app.similarity  import find_similar_problems
 
 app = Flask(__name__)
@@ -75,10 +75,22 @@ class ExtractKeywords(Resource):
         
         user_input = args["input"]
 
-        # Extract keywords
         prediction = extract_keywords(user_input)
 
         return {"keywords": prediction}, 200
+
+class ClassifyFiveFeatures(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("input", type=str, required=True, help="Input text is required")
+        args = parser.parse_args()
+        
+        user_input = args["input"]
+
+        predictions = predict_five_features(user_input)
+        print(predictions)
+        return {"binary": predictions}, 200
+
 
 class FindSimilarProblems(Resource):
     def post(self):
@@ -88,7 +100,6 @@ class FindSimilarProblems(Resource):
         
         user_input = args["input"]
 
-        # Find similar problems
         response = find_similar_problems(user_input)
 
         return response, 200
@@ -107,6 +118,8 @@ api.add_resource(ClassifyOutput, "/classify/output")
 api.add_resource(ClassifyTopic, "/classify/topic")
 api.add_resource(ClassifyDifficulty, "/classify/difficulty")
 api.add_resource(ExtractKeywords, "/classify/keywords")
+api.add_resource(ClassifyFiveFeatures, "/classify/mapreduce")
+
 api.add_resource(Classification, "/classify")
 
 
