@@ -35,7 +35,7 @@ def find_similar_problems(user_input):
         sim_score = similarity_scores[0, idx] * 100 
         top_problems[f"problem_{i+1}"] = {
             "id": str(problem_id),
-            "similarity_score": str(round(sim_score, 2))
+            "similarity_score": str(round(sim_score))
         }
     
     return top_problems

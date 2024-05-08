@@ -2,10 +2,10 @@ import joblib
 import pandas as pd
 directory = "app/"
 
-model_input = joblib.load(directory + "models/input_classifier.joblib")
-model_output =  joblib.load(directory + "models/output_classifier.joblib")
+model_input = joblib.load(directory + "models/updated/input_classifier.joblib")
+model_output =  joblib.load(directory + "models/updated/output_classifier.joblib")
 model_difficulty = joblib.load(directory + "models/difficulty_classifier.joblib")
-model_topics = joblib.load(directory + "models/topics_classifier.pkl")
+model_topics = joblib.load(directory + "models/updated/topics_classifier.pkl")
 keywords_extractor = joblib.load(directory + "models/keywords_extractor.pkl")
 keywords_decode = joblib.load(directory + "models/keywords_decode.pkl")
 
@@ -72,6 +72,7 @@ def classify_all(user_input):
     predictions['topic'] = predict_topic(user_input)
     predictions['difficulty'] = predict_difficulty(user_input)
     predictions['keywords'] = extract_keywords(user_input)
+    predictions['binary'] = predict_five_features(user_input)
 
     return predictions
 
