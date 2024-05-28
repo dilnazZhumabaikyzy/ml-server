@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
-from app.classifier import classify_all, predict_five_features, predict_input, predict_output, predict_topic, predict_difficulty, extract_keywords
+from app.classifier import  classify_all, predict_five_features, predict_input, predict_output, predict_topic, predict_difficulty, extract_keywords
 from app.similarity  import find_similar_problems
+from app.goanaguru import ask_goana_guru 
 
 app = Flask(__name__)
 api = Api(app)
@@ -111,6 +112,19 @@ class WelcomeRailway(Resource):
 
         return response, 200
 
+class GoanaGuru(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("input", type=str, required=True, help="Input text is required")
+        args = parser.parse_args()
+        
+        user_input = args["input"]
+
+        predictions = ask_goana_guru(user_input)
+
+        return predictions, 200
+
+
 
 api.add_resource(FindSimilarProblems, "/find_similar_problems")
 api.add_resource(ClassifyInput, "/classify/input")
@@ -124,8 +138,8 @@ api.add_resource(Classification, "/classify")
 
 
 api.add_resource(WelcomeRailway, "/")
+api.add_resource(GoanaGuru, "/goanaguru")
 
 
 if __name__ == "__main__":
     app.run(debug=True, port=3000,host="127.0.0.1")
-
